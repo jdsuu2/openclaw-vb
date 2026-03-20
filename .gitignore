@@ -1,0 +1,22 @@
+# 不要提交敏感文件 / Don't commit sensitive files
+.env
+*.env
+.env.*
+
+# OpenClaw 运行时文件 / OpenClaw runtime files
+workspace/memory/
+workspace/MEMORY.md
+workspace/BOOTSTRAP.md
+
+# 编辑器 / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Node.js (如果你在此工作空间开发插件 / If developing plugins in this workspace)
+node_modules/
+dist/

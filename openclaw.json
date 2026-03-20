@@ -1,0 +1,81 @@
+// openclaw.json — VibeClaw 个性化配置 / Personalized configuration
+// 复制到 ~/.openclaw/openclaw.json 并按需修改
+// Copy to ~/.openclaw/openclaw.json and modify as needed
+//
+// 注意：OpenClaw 支持 JSON5 格式（带注释、不带引号的键等）
+// Note: OpenClaw supports JSON5 format (comments, unquoted keys, etc.)
+// 参考 / See: https://docs.openclaw.ai (gateway configuration docs)
+//
+// 文档 / Docs: https://docs.openclaw.ai
+{
+  // 日志级别 / Log level: "error" | "warn" | "info" | "debug"
+  logging: { level: "info" },
+
+  agent: {
+    // 模型选择 / Model selection
+    // 选项 / Options: "anthropic/claude-opus-4-6", "openai/gpt-4o", "google/gemini-2-5-pro"
+    model: "anthropic/claude-opus-4-6",
+
+    // 工作空间路径 / Workspace path
+    // 建议：将此 repo clone 到 ~/.openclaw/workspace 后设置为该路径
+    // Recommended: clone this repo to ~/.openclaw/workspace, then set this path
+    workspace: "~/.openclaw/workspace",
+
+    // 思考深度 / Thinking depth: "none" | "low" | "medium" | "high"
+    // Vibe Coding 推荐 medium，复杂问题用 high
+    thinkingDefault: "medium",
+
+    // 超时（秒）/ Timeout in seconds
+    timeoutSeconds: 1800,
+
+    // 心跳间隔 / Heartbeat interval
+    // "0m" = 禁用 (推荐初始) | "30m" = 每 30 分钟
+    // "0m" = disabled (recommended initially) | "30m" = every 30 minutes
+    heartbeat: { every: "0m" },
+
+    // 禁用自动 bootstrap（我们已有自定义工作空间文件）
+    // Disable auto bootstrap (we already have custom workspace files)
+    skipBootstrap: true,
+  },
+
+  channels: {
+    // WhatsApp 配置 / WhatsApp configuration
+    // 取消注释并填写你的号码 / Uncomment and fill with your number
+    // whatsapp: {
+    //   allowFrom: ["+86XXXXXXXXXX"],
+    //   groups: {
+    //     "*": { requireMention: true },
+    //   },
+    // },
+
+    // Telegram 配置 / Telegram configuration
+    // telegram: {
+    //   token: "${TELEGRAM_BOT_TOKEN}",
+    //   // allowFrom: ["@yourusername"],
+    // },
+
+    // Discord 配置 / Discord configuration
+    // discord: {
+    //   token: "${DISCORD_BOT_TOKEN}",
+    // },
+  },
+
+  // 路由配置 / Routing configuration
+  routing: {
+    groupChat: {
+      // 在群组中触发 bot 的关键词 / Keywords to trigger bot in groups
+      mentionPatterns: ["@vibeclaw", "vibeclaw", "@openclaw"],
+    },
+  },
+
+  // 会话管理 / Session management
+  session: {
+    scope: "per-sender",
+    resetTriggers: ["/new", "/reset", "/重置"],
+    reset: {
+      mode: "daily",
+      atHour: 4,     // 凌晨 4 点重置 / Reset at 4 AM
+      idleMinutes: 10080,  // 7 天不活跃后重置 / Reset after 7 days idle
+    },
+  },
+}
