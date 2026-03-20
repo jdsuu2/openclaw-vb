@@ -35,6 +35,7 @@ export const de: TranslationMap = {
     chat: "Chat",
     config: "Konfiguration",
     debug: "Debug",
+    modelConfig: "Model Config",
     logs: "Protokolle",
   },
   subtitles: {
@@ -50,6 +51,7 @@ export const de: TranslationMap = {
     chat: "Direkte Gateway-Chat-Sitzung für schnelle Eingriffe.",
     config: "~/.openclaw/openclaw.json sicher bearbeiten.",
     debug: "Gateway-Snapshots, Ereignisse und manuelle RPC-Aufrufe.",
+    modelConfig: "Configure AI model providers and default model.",
     logs: "Live-Verfolgung der Gateway-Protokolldateien.",
   },
   overview: {

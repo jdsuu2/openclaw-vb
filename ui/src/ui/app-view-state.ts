@@ -32,7 +32,7 @@ import type {
   StatusSummary,
   ToolsCatalogResult,
 } from "./types.ts";
-import type { ChatAttachment, ChatQueueItem } from "./ui-types.ts";
+import type { ModelConfigForm, ProviderEntry, ProviderPresetId } from "./controllers/model-config.ts";
 import type { NostrProfileFormState } from "./views/channels.nostr-profile-form.ts";
 import type { SessionLogEntry } from "./views/usage.ts";
 
@@ -364,4 +364,17 @@ export type AppViewState = {
     handleOpenSidebar: (content: string) => void;
     handleCloseSidebar: () => void;
     handleSplitRatioChange: (ratio: number) => void;
+    // ── Model Config page ──
+    modelConfigLoading: boolean;
+    modelConfigSaving: boolean;
+    modelConfigError: string | null;
+    modelConfigSaveSuccess: boolean;
+    modelConfigProviders: Record<string, ProviderEntry>;
+    modelConfigForm: ModelConfigForm;
+    modelConfigBaseHash: string | null;
+    modelConfigNewModelInputs: Record<number, string>;
+    modelConfigAddPreset: ProviderPresetId;
+    modelConfigAddCustomId: string;
+    handleModelConfigLoad: () => Promise<void>;
+    handleModelConfigSave: () => Promise<void>;
   };

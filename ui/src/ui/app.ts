@@ -85,6 +85,12 @@ import type {
   ToolsCatalogResult,
 } from "./types.ts";
 import { type ChatAttachment, type ChatQueueItem, type CronFormState } from "./ui-types.ts";
+import {
+  loadModelConfig as loadModelConfigInternal,
+  saveModelConfig as saveModelConfigInternal,
+  resetModelConfigSaveSuccess as resetModelConfigSaveSuccessInternal,
+  type ProviderPresetId,
+} from "./controllers/model-config.ts";
 import { generateUUID } from "./uuid.ts";
 import type { NostrProfileFormState } from "./views/channels.nostr-profile-form.ts";
 
@@ -427,6 +433,21 @@ export class OpenClawApp extends LitElement {
   @state() logsMaxBytes = 250_000;
   @state() logsAtBottom = true;
 
+  // ── Model Config page ──
+  @state() modelConfigLoading = false;
+  @state() modelConfigSaving = false;
+  @state() modelConfigError: string | null = null;
+  @state() modelConfigSaveSuccess = false;
+  @state() modelConfigProviders: Record<string, import("./controllers/model-config.ts").ProviderEntry> = {};
+  @state() modelConfigForm: import("./controllers/model-config.ts").ModelConfigForm = {
+    providers: [],
+    defaultModel: "",
+  };
+  @state() modelConfigBaseHash: string | null = null;
+  @state() modelConfigNewModelInputs: Record<number, string> = {};
+  @state() modelConfigAddPreset: ProviderPresetId = "modelstudio";
+  @state() modelConfigAddCustomId = "";
+
   client: GatewayBrowserClient | null = null;
   private chatScrollFrame: number | null = null;
   private chatScrollTimeout: number | null = null;
@@ -708,6 +729,23 @@ export class OpenClawApp extends LitElement {
     const newRatio = Math.max(0.4, Math.min(0.7, ratio));
     this.splitRatio = newRatio;
     this.applySettings({ ...this.settings, splitRatio: newRatio });
+  }
+
+  // ── Model Config handlers ──
+
+  async handleModelConfigLoad() {
+    await loadModelConfigInternal(this as unknown as Parameters<typeof loadModelConfigInternal>[0]);
+  }
+
+  async handleModelConfigSave() {
+    await saveModelConfigInternal(this as unknown as Parameters<typeof saveModelConfigInternal>[0]);
+    if (this.modelConfigSaveSuccess) {
+      setTimeout(() => {
+        resetModelConfigSaveSuccessInternal(
+          this as unknown as Parameters<typeof resetModelConfigSaveSuccessInternal>[0],
+        );
+      }, 5000);
+    }
   }
 
   render() {

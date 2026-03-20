@@ -126,6 +126,16 @@ const lazyLogs = createLazy(() => import("./views/logs.ts"));
 const lazyNodes = createLazy(() => import("./views/nodes.ts"));
 const lazySessions = createLazy(() => import("./views/sessions.ts"));
 const lazySkills = createLazy(() => import("./views/skills.ts"));
+const lazyModelConfig = createLazy(() => import("./views/model-config.ts"));
+import {
+  addProvider as mcAddProvider,
+  removeProvider as mcRemoveProvider,
+  toggleProviderExpanded as mcToggleExpanded,
+  updateProvider as mcUpdateProvider,
+  addCustomModelToProvider as mcAddCustomModel,
+  removeCustomModelFromProvider as mcRemoveCustomModel,
+  type ModelConfigState,
+} from "./controllers/model-config.ts";
 
 function lazyRender<M>(getter: () => M | null, render: (mod: M) => unknown) {
   const mod = getter();
@@ -1849,6 +1859,59 @@ export function renderApp(state: AppViewState) {
                 includeSections: [...AI_AGENTS_SECTION_KEYS],
                 includeVirtualSections: false,
               })
+            : nothing
+        }
+
+        ${
+          state.tab === "modelConfig"
+            ? lazyRender(lazyModelConfig, (m) =>
+                m.renderModelConfig({
+                  state,
+                  onAddProvider: (presetId, customId) => {
+                    mcAddProvider(state as unknown as ModelConfigState, presetId, customId);
+                  },
+                  onRemoveProvider: (index) => {
+                    mcRemoveProvider(state as unknown as ModelConfigState, index);
+                  },
+                  onToggleProviderExpanded: (index) => {
+                    mcToggleExpanded(state as unknown as ModelConfigState, index);
+                  },
+                  onProviderBaseUrlChange: (index, value) => {
+                    mcUpdateProvider(state as unknown as ModelConfigState, index, { baseUrl: value });
+                  },
+                  onProviderApiKeyChange: (index, value) => {
+                    mcUpdateProvider(state as unknown as ModelConfigState, index, { apiKey: value });
+                  },
+                  onProviderApiKeyVisibilityToggle: (index) => {
+                    const p = state.modelConfigForm.providers[index];
+                    if (!p) return;
+                    mcUpdateProvider(state as unknown as ModelConfigState, index, { apiKeyVisible: !p.apiKeyVisible });
+                  },
+                  onAddCustomModel: (providerIndex, modelId) => {
+                    mcAddCustomModel(state as unknown as ModelConfigState, providerIndex, modelId);
+                  },
+                  onRemoveCustomModel: (providerIndex, modelIndex) => {
+                    mcRemoveCustomModel(state as unknown as ModelConfigState, providerIndex, modelIndex);
+                  },
+                  onDefaultModelChange: (value) => {
+                    state.modelConfigForm = { ...state.modelConfigForm, defaultModel: value };
+                  },
+                  newModelInputs: state.modelConfigNewModelInputs,
+                  onNewModelInput: (providerIndex, value) => {
+                    state.modelConfigNewModelInputs = { ...state.modelConfigNewModelInputs, [providerIndex]: value };
+                  },
+                  addProviderPreset: state.modelConfigAddPreset,
+                  addProviderCustomId: state.modelConfigAddCustomId,
+                  onAddProviderPresetChange: (value) => {
+                    state.modelConfigAddPreset = value;
+                  },
+                  onAddProviderCustomIdChange: (value) => {
+                    state.modelConfigAddCustomId = value;
+                  },
+                  onSave: () => state.handleModelConfigSave(),
+                  onLoad: () => state.handleModelConfigLoad(),
+                }),
+              )
             : nothing
         }
 
